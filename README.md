@@ -54,3 +54,7 @@ Since it's a task, you can even take text from a shell command:
 import scala.sys.process._
 mfFinger := "cowsay -d Wow, you suck".!!
 ```
+
+## License
+
+Published under the [WTFPL](http://www.wtfpl.net/txt/copying/).
