@@ -4,15 +4,9 @@ Render a middle-finger in ASCII whenever your code fails to compile.
 
 ## Usage
 
-Clone this project and run:
-
-```shell
-sbt ^publishLocal
-```
-
-And then add this to your project or global plugins file:
+Add this to your project plugins or global plugins file:
 ```scala
-addSbtPlugin("com.birdhowl" % "sbt-mfinger" % "0.1.0-SNAPSHOT")
+addSbtPlugin("com.birdhowl" % "sbt-mfinger" % "0.1.0")
 ```
 
 Then, whenever your project fails to compile, it will show you its true intentions:
