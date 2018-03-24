@@ -8,28 +8,11 @@ object MFPlugin extends AutoPlugin {
   override def trigger = allRequirements
 
   object autoImport {
-    lazy val mfFinger = settingKey[String]("Text to show when compilation fails")
+    lazy val mfFinger = taskKey[String]("Text to show when compilation fails")
   }
   import autoImport._
 
-  override val projectSettings =
-    inConfig(Compile)(mfFingerSettings) ++
-      inConfig(Test)(mfFingerSettings)
-
-  private lazy val mfFingerSettings = Seq(
-    compile := {
-      compile.result.value match {
-        case Inc(ex: Incomplete) =>
-          val fingerWidth = mfFinger.value.split("\n").map(_.size).max
-          val theFinger = mfFinger.value + "\n" +
-            footer(name.value, fingerWidth)
-
-          sLog.value.error(theFinger)
-
-          throw ex
-        case Value(v) => v
-      }
-    },
+  override val projectSettings = Seq(
     mfFinger := """|...................../´¯¯/)
                    |...................,/¯.../
                    |.................../..../
@@ -39,7 +22,25 @@ object MFPlugin extends AutoPlugin {
                    |...........\..............'...../
                    |............\....\.........._.·´
                    |.............\..............(
-                   |..............\..............\""".stripMargin)
+                   |..............\..............\""".stripMargin) ++
+    mfFingerSettings(Compile) ++
+    mfFingerSettings(Test)
+
+  private def mfFingerSettings(conf: Configuration) = Seq(
+    compile in conf := {
+      (compile in conf).result.value match {
+        case Inc(ex: Incomplete) =>
+          val fingerText = mfFinger.value
+          val fingerWidth = fingerText.split("\n").map(_.size).max
+          val theFinger = mfFinger.value + "\n" +
+            footer(name.value, fingerWidth)
+
+          sLog.value.error(theFinger)
+
+          throw ex
+        case Value(v) => v
+      }
+    })
 
   def footer(name: String, minWidth: Int) = {
     val footerWidth = Math.max(minWidth, name.size + 4)
